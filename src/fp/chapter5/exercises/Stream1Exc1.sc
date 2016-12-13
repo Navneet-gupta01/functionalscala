@@ -86,7 +86,11 @@ object Stream1Exc1 {
    
    
    
- 
-  
+ 	def gets[A](ex : Stream1[A]) = {
+ 		Stream1.constant(ex).take(10)
+ 	}                                         //> gets: [A](ex: fp.chapter5.exercises.Stream1[A])fp.chapter5.exercises.Stream
+                                                  //| 1[fp.chapter5.exercises.Stream1[A]]
+  gets(b)                                         //> res33: fp.chapter5.exercises.Stream1[fp.chapter5.exercises.Stream1[Int]] = 
+                                                  //| Cons(<function0>,<function0>)
   
 }

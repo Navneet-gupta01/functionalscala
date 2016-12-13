@@ -133,7 +133,33 @@ trait Stream1[+A] {
       case _ => None
     }
   }
+  
+  def zipWith[B,C](s2: Stream1[B])(f: (A,B) => C): Stream1[C] =
+    unfold((this, s2)) {
+      case (Cons(h1,t1), Cons(h2,t2)) =>
+        Some((f(h1(), h2()), (t1(), t2())))
+      case _ => None
+    }
+
+  // special case of `zipWith`
+  def zip[B](s2: Stream1[B]): Stream1[(A,B)] =
+    zipWith(s2)((_,_))
+
+
+  def zipAll[B](s2: Stream1[B]): Stream1[(Option[A],Option[B])] =
+    zipWithAll(s2)((_,_))
+
+  def zipWithAll[B, C](s2: Stream1[B])(f: (Option[A], Option[B]) => C): Stream1[C] =
+    Stream1.unfold((this, s2)) {
+      case (Empty, Empty) => None
+      case (Cons(h, t), Empty) => Some(f(Some(h()), Option.empty[B]) -> (t(), empty[B]))
+      case (Empty, Cons(h, t)) => Some(f(Option.empty[A], Some(h())) -> (empty[A] -> t()))
+      case (Cons(h1, t1), Cons(h2, t2)) => Some(f(Some(h1()), Some(h2())) -> (t1() -> t2()))
+    }
+  
+  
 }
+
 case object Empty extends Stream1[Nothing]
 case class Cons[+A](h: () => A,t: () => Stream1[A]) extends Stream1[A]
 

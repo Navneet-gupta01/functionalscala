@@ -43,6 +43,15 @@ object RNG {
     else (i1.abs,rng1)
   }
   
+  // We need to be quite careful not to skew the generator.
+  // Since `Int.Minvalue` is 1 smaller than `-(Int.MaxValue)`,
+  // it suffices to increment the negative numbers by 1 and make them positive.
+  // This maps Int.MinValue to Int.MaxValue and -1 to 0.
+  def nonNegativeInt(rng: RNG): (Int, RNG) = {
+    val (i, r) = rng.nextInt
+    (if (i < 0) -(i + 1) else i, r)
+  }
+  
   def double(rng: RNG): (Double, RNG) = {
     val (i1,rng1) =  positiveInt(rng)
     (i1.toDouble/Int.MaxValue,rng1)
@@ -77,6 +86,8 @@ object RNG {
     go(rng,Nil,count)  
   }
   
+  def boolean(rng: RNG): (Boolean, RNG) =
+    rng.nextInt match { case (i,rng2) => (i%2==0,rng2) }
   
   
 }
