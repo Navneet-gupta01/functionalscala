@@ -14,7 +14,7 @@ object Tree {
     }
   }
   
-  def maximum(tree : Tree[Int]):Int = {
+  def maximum[A](tree : Tree[Int]):Int = {
     tree match {
       case Leaf(a) => a
       case Branch(l,r) => maximum(l) max maximum(r)

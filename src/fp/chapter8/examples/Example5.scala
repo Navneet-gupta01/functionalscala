@@ -28,7 +28,8 @@ object Gen1 {
    *
    *    cartesian(Stream(Stream(1,2), Stream(3), Stream(4,5))) ==
    *    Stream(Stream(1,3,4), Stream(1,3,5), Stream(2,3,4), Stream(2,3,5))
-  */
+ 	 */
+    
   def cartesian[A](s: Stream1[Stream1[A]]): Stream1[Stream1[A]] =
     s.foldRight(Stream1(Stream1[A]()))((hs,ts) => map2Stream1(hs,ts)(Stream1.cons(_,_)))
     
