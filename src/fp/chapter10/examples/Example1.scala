@@ -4,6 +4,7 @@ trait Monoid[A] {
   def op(a1: A, a2: A): A
   def zero: A
 }
+
 object Monoid {
   
   def stringMonoid = new Monoid[String] {
@@ -48,6 +49,16 @@ object Monoid {
     def zero = None
   }
   
+  val wcMonoid: Monoid[WordCount] = new Monoid[WordCount] {
+    def op(a1: WordCount, a2: WordCount) = (a1,a2) match {
+      case (Stub(l),Stub(r)) => Stub(l+r)
+      case (Stub(l),Part(ls,n,rs)) => Part(l+ls,n,rs)
+      case (Part(ls,n,rs),Stub(r)) => Part(ls,n,rs+r)
+      case (Part(ls1,n1,rs1),Part(ls2,n2,rs2)) => ???
+    }
+    def zero = Stub("")
+  }
+  
   def EndoMonoid[A] : Monoid[A => A] = new Monoid[A => A] {
     def op(a1: (A => A), a2: (A => A)) = a => a1(a2(a))
     def zero = (a => a)
@@ -90,6 +101,14 @@ object Monoid {
     foldMap(as, dual(EndoMonoid[B]))(a => b => f(b, a))(z)
   
     
-  
+  def foldMapV[A, B](as: IndexedSeq[A], m: Monoid[B])(f: A => B): B =
+    if (as.length == 0)
+      m.zero
+    else if (as.length == 1)
+      f(as(0))
+    else {
+      val (l, r) = as.splitAt(as.length / 2)
+      m.op(foldMapV(l, m)(f), foldMapV(r, m)(f))
+    }
   
 }
