@@ -122,6 +122,24 @@ object Option {
     }
   }
   
+  def sequence3[A](a:List[Option[A]]): Option[List[A]] = {
+    def getList(l:List[Option[A]]):List[A] = {
+      a match {
+        case Nil => Nil
+        case x::xs => 
+          x match {
+            case None => Nil
+            case Some(a) => a::getList(xs)
+          }
+      }
+    }
+    val list = getList(a)
+    list match {
+      case Nil => None
+      case _ => Some(list)
+    }
+  }
+  
   def parsePatterns(a: List[String]): Option[List[Pattern]] =
     sequence(a map pattern)
 

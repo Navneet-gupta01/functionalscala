@@ -123,8 +123,11 @@ object List {
   
   // writing sum in terms of foldLeft
   def sum3(xs:List[Int]):Int = foldLeft(xs, 0)(_+_)
+  
   def product3(xs:List[Int]):Int = foldLeft(xs, 1)(_*_)
+  
   def length3[A](xs:List[A]):Int = foldLeft(xs,0)((a,b) => a+1)
+  
   def reverse3[A](xs:List[A]) = foldLeft(xs,Nil:List[A])((a,b) => Cons(b,a))
   
   def fLUsingFr[A,B](xs:List[A],z:B)(f:(B,A) => B): B = {
